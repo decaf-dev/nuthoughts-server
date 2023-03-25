@@ -7,11 +7,11 @@ export const validateFields = (fields: Field[]) => {
     const { value, expectedType, isOptional } = field;
     if (value === undefined && isOptional) {
       //Do nothing
-    } else if (value !== expectedType) {
+    } else if (typeof value !== expectedType) {
       invalidFields.push(field);
     }
   });
-  throw new InvalidTypesError(invalidFields);
+  if (invalidFields.length !== 0) throw new InvalidTypesError(invalidFields);
 };
 
 export const isObject = (obj: unknown) => {
