@@ -36,13 +36,13 @@ app.post("/save-blocks", (req: Request, res: Response, next: NextFunction) => {
         throw new Error("Invalid data. Array must contain objects.");
 
       const block = obj as {
-        submittedTime: number;
+        submissionTime: number;
         text: string;
       };
       validateFields([
         {
-          name: "submittedTime",
-          value: block.submittedTime,
+          name: "submissionTime",
+          value: block.submissionTime,
           expectedType: "number",
         },
         {
