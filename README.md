@@ -16,6 +16,12 @@ Now install all dependencies
 
 - `yarn install`
 
+Create an .env file based on the .env.example
+
+- `cp .env.example .env`
+
+Now add a value to each variable in the environment file
+
 ## Usage
 
 ### Development
