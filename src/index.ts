@@ -33,7 +33,9 @@ app.post("/save-blocks", (req: Request, res: Response, next: NextFunction) => {
 
     body.forEach((obj: unknown) => {
       if (!isObject(obj))
-        throw new Error("Invalid data. Array must contain objects.");
+        throw new Error(
+          "Invalid data. Array must contain saveBlock objects of the format: { submissionTime: number, text: string}."
+        );
 
       const block = obj as {
         submissionTime: number;
