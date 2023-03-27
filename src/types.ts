@@ -1,4 +1,4 @@
-export type TextBlock = {
-  submissionTime: number;
+export type Thought = {
+  creationTime: number;
   text: string;
 };

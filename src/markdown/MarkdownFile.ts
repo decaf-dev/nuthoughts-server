@@ -1,24 +1,24 @@
-import { TextBlock } from "../types";
 import fs from "fs";
+import { Thought } from "../types";
 
 export class MarkdownFile {
-  private static serializeFrontMatter(block: TextBlock) {
+  private static serializeFrontMatter(thought: Thought) {
     const frontmatter = [];
     frontmatter.push("---");
-    frontmatter.push(`submissionTime: ${block.submissionTime}`);
+    frontmatter.push(`creationTime: ${thought.creationTime}`);
     frontmatter.push("---");
     return frontmatter.join("\n");
   }
-  static saveBlockAsMarkdownFile(block: TextBlock) {
+  static saveThoughtAsMarkdownFile(thought: Thought) {
     const folderPath = process.env.SAVE_FOLDER_PATH;
-    const fileData = this.serializeFrontMatter(block) + "\n\n" + block.text;
+    const fileData = this.serializeFrontMatter(thought) + "\n\n" + thought.text;
 
     //Initialize folder
     if (!fs.existsSync(folderPath!)) {
       fs.mkdirSync(folderPath!);
     }
 
-    const filePath = folderPath + "/" + block.text.substring(0, 60) + ".md";
+    const filePath = folderPath + "/" + thought.text.substring(0, 60) + ".md";
     return fs.promises.writeFile(filePath, fileData);
   }
 }

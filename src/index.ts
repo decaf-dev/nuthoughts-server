@@ -2,16 +2,16 @@ import { Request, Response, Express, NextFunction } from "express";
 import express from "express";
 import dotenv from "dotenv";
 
-import { TextBlock } from "./types";
-import { isObject, validateFields } from "./validation/utils";
+import { validateFields } from "./validation/utils";
 import { MarkdownFile } from "./markdown/MarkdownFile";
+import { Thought } from "./types";
 
 //Load .env file
 dotenv.config();
 
 const app: Express = express();
-//Allow incoming strings
-app.use(express.urlencoded({ extended: true }));
+// //Allow incoming strings
+// app.use(express.urlencoded({ extended: true }));
 //Allow incoming json
 app.use(express.json({ limit: "1mb" }));
 
@@ -25,42 +25,26 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.post(
-  "/save-blocks",
+  "/thought",
   async (req: Request, res: Response, next: NextFunction) => {
+    const { body } = req;
+    console.log("New thought", body);
     try {
-      const body = req.body as unknown[];
-
-      if (!Array.isArray(body))
-        throw new Error("Invalid data. Data must be an array.");
-
-      if (body.length === 0) {
-        res.sendStatus(200);
-        return;
-      }
-
-      for (let i = 0; i < body.length; i++) {
-        const obj: unknown = body[i];
-        if (!isObject(obj))
-          throw new Error(
-            "Invalid data. Array must contain saveBlock objects of the format: { submissionTime: number, text: string}."
-          );
-
-        const textBlock = obj as TextBlock;
-        validateFields([
-          {
-            name: "submissionTime",
-            value: textBlock.submissionTime,
-            expectedType: "number",
-          },
-          {
-            name: "text",
-            value: textBlock.text,
-            expectedType: "string",
-          },
-        ]);
-        //TODO if any fail - rollback
-        await MarkdownFile.saveBlockAsMarkdownFile(textBlock);
-      }
+      const thought = body as Thought;
+      validateFields([
+        {
+          name: "creationTime",
+          value: thought.creationTime,
+          expectedType: "number",
+        },
+        {
+          name: "text",
+          value: thought.text,
+          expectedType: "string",
+        },
+      ]);
+      //TODO if any fail - rollback
+      await MarkdownFile.saveThoughtAsMarkdownFile(thought);
       res.sendStatus(201);
     } catch (err) {
       next(err);
