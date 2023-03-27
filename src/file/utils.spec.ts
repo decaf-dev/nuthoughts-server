@@ -1,37 +1,10 @@
-import {
-  firstLine,
-  getFilePathExtension,
-  truncateToLastWord,
-  uppercaseFirstLetter,
-} from "./utils";
+import { truncate } from "./utils";
+import { firstLine, getFilePathExtension, uppercaseFirstLetter } from "./utils";
 
 describe("uppercaseFirstLetter", () => {
   test("uppercases first letter", () => {
     const result = uppercaseFirstLetter("test");
     expect(result).toEqual("Test");
-  });
-});
-
-describe("truncateToLastWord", () => {
-  test("returns a string with no white space", () => {
-    const maxChars = 5;
-    const result = truncateToLastWord("abc\n\n\n", maxChars);
-    expect(result).toEqual("abc");
-  });
-
-  test("returns the end of the word", () => {
-    const maxChars = 5;
-    const result = truncateToLastWord("abc 123", maxChars);
-    expect(result).toEqual("abc 123");
-  });
-
-  test("returns max file name size (255 characters)", () => {
-    const maxChars = 60;
-    const string = Array(256).fill("a").join(""); //This is one word
-
-    const result = truncateToLastWord(string, maxChars);
-    const expectedResult = Array(255).fill("a").join("");
-    expect(result).toEqual(expectedResult);
   });
 });
 
@@ -43,6 +16,18 @@ describe("firstLine", () => {
   test("handles multiple lines", () => {
     const result = firstLine("abc\ndef");
     expect(result).toEqual("abc");
+  });
+});
+
+describe("truncate", () => {
+  test("returns a truncated string", () => {
+    const result = truncate("test string", 4);
+    expect(result).toEqual("test");
+  });
+
+  test("returns a string with no white space", () => {
+    const result = truncate("test string\n\n", 13);
+    expect(result).toEqual("test string");
   });
 });
 

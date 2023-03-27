@@ -1,6 +1,7 @@
 import { Thought } from "../types";
 import FileOperations from "./FileOperations";
-import { firstLine, truncateToLastWord, uppercaseFirstLetter } from "./utils";
+import Truncate from "./Truncate";
+import { firstLine, uppercaseFirstLetter } from "./utils";
 
 export default class MarkdownFile {
   private static FILE_NAME_LENGTH = 60;
@@ -24,7 +25,7 @@ export default class MarkdownFile {
 
   private static getFileName(thought: Thought) {
     const line = firstLine(thought.text);
-    const fileName = truncateToLastWord(line, this.FILE_NAME_LENGTH);
+    const fileName = Truncate.smartTruncate(line, this.FILE_NAME_LENGTH);
     return uppercaseFirstLetter(fileName);
   }
 
