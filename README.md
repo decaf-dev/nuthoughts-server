@@ -27,3 +27,7 @@ Now add a value to each variable in the environment file
 ### Development
 
 - `yarn run dev`
+
+### Test
+
+- `yarn run test`
