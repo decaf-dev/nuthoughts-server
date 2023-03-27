@@ -13,7 +13,3 @@ export const validateFields = (fields: Field[]) => {
   });
   if (invalidFields.length !== 0) throw new InvalidTypesError(invalidFields);
 };
-
-export const isObject = (obj: unknown) => {
-  return typeof obj === "object" && !Array.isArray(obj) && obj !== null;
-};
