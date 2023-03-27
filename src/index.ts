@@ -3,8 +3,8 @@ import express from "express";
 import dotenv from "dotenv";
 
 import { validateFields } from "./validation/utils";
-import { MarkdownFile } from "./markdown/MarkdownFile";
 import { Thought } from "./types";
+import MarkdownFile from "./file/MarkdownFile";
 
 //Load .env file
 dotenv.config();
