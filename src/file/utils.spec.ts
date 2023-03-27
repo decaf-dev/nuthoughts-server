@@ -1,7 +1,7 @@
 import {
   firstLine,
   getFilePathExtension,
-  truncateString,
+  truncateToLastWord,
   uppercaseFirstLetter,
 } from "./utils";
 
@@ -12,10 +12,26 @@ describe("uppercaseFirstLetter", () => {
   });
 });
 
-describe("truncateString", () => {
-  test("cuts off characters after 3", () => {
-    const result = truncateString("abcdef", 3);
+describe("truncateToLastWord", () => {
+  test("returns a string with no white space", () => {
+    const maxChars = 5;
+    const result = truncateToLastWord("abc\n\n\n", maxChars);
     expect(result).toEqual("abc");
+  });
+
+  test("returns the end of the word", () => {
+    const maxChars = 5;
+    const result = truncateToLastWord("abc 123", maxChars);
+    expect(result).toEqual("abc 123");
+  });
+
+  test("returns max file name size (255 characters)", () => {
+    const maxChars = 60;
+    const string = Array(256).fill("a").join(""); //This is one word
+
+    const result = truncateToLastWord(string, maxChars);
+    const expectedResult = Array(255).fill("a").join("");
+    expect(result).toEqual(expectedResult);
   });
 });
 

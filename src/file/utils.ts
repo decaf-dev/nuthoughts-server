@@ -2,8 +2,15 @@ export const uppercaseFirstLetter = (text: string) => {
   return text.charAt(0).toUpperCase() + text.slice(1);
 };
 
-export const truncateString = (text: string, numChars: number) => {
-  return text.substring(0, numChars);
+export const truncateToLastWord = (text: string, maxChars: number): string => {
+  while (
+    !text.charAt(maxChars - 1).match(/\s/) &&
+    maxChars < text.length &&
+    maxChars < 255
+  ) {
+    return truncateToLastWord(text, maxChars + 1);
+  }
+  return text.substring(0, maxChars).trim();
 };
 
 export const firstLine = (text: string) => {
