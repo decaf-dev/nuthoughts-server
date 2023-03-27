@@ -12,7 +12,12 @@ export class MarkdownFile {
   }
 
   private static getFileName(thought: Thought) {
-    return uppercaseFirstLetter(thought.text.substring(0, MAX_FILE_NAME_SIZE));
+    let titleText = thought.text;
+    const newLineIndex = titleText.indexOf("\n");
+    //Only place the first line into consideration for the file name
+    if (newLineIndex != -1) titleText = titleText.substring(0, newLineIndex);
+    titleText = titleText.substring(0, MAX_FILE_NAME_SIZE);
+    return uppercaseFirstLetter(titleText);
   }
 
   static saveThoughtAsMarkdownFile(thought: Thought) {
