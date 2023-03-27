@@ -1,34 +1,43 @@
 import { Thought } from "../types";
-import { FILE_NAME_LENGTH } from "./constants";
 import FileOperations from "./FileOperations";
-import { uppercaseFirstLetter } from "./utils";
+import { firstLine, truncateString, uppercaseFirstLetter } from "./utils";
 
 export default class MarkdownFile {
-  static _serializeFrontMatter(thought: Thought) {
+  private static FILE_NAME_LENGTH = 60;
+
+  private static serializeFrontMatter(creationTime: number) {
     const frontmatter = [];
     frontmatter.push("---");
-    frontmatter.push(`creationTime: ${thought.creationTime}`);
+    frontmatter.push(`creationTime: ${creationTime}`);
     frontmatter.push("---");
     return frontmatter.join("\n");
   }
 
-  static _getFileName(thought: Thought) {
-    let titleText = thought.text;
-    const newLineIndex = titleText.indexOf("\n");
-
-    //Only place the first line into consideration for the file name
-    if (newLineIndex != -1) titleText = titleText.substring(0, newLineIndex);
-    titleText = titleText.substring(0, FILE_NAME_LENGTH);
-    return uppercaseFirstLetter(titleText);
+  private static buildFileData(thought: Thought) {
+    const fileData = [];
+    fileData.push(this.serializeFrontMatter(thought.creationTime));
+    fileData.push("\n");
+    fileData.push("\n");
+    fileData.push(thought.text);
+    return fileData.join("");
   }
 
-  static async saveThoughtAsMarkdownFile(thought: Thought) {
-    const folderPath = process.env.SAVE_FOLDER_PATH;
-    await FileOperations.initializeFolder(folderPath!);
+  private static getFileName(thought: Thought) {
+    const line = firstLine(thought.text);
+    const fileName = truncateString(line, this.FILE_NAME_LENGTH);
+    return uppercaseFirstLetter(fileName);
+  }
 
-    const fileData =
-      this._serializeFrontMatter(thought) + "\n\n" + thought.text;
-    const filePath = folderPath + "/" + this._getFileName(thought);
-    await FileOperations.saveTextToFile(filePath, ".md", fileData);
+  private static getFilePath(folderPath: string, thought: Thought) {
+    const fileName = this.getFileName(thought);
+    return folderPath + "/" + fileName + ".md";
+  }
+
+  static async saveThought(saveFolderPath: string, thought: Thought) {
+    await FileOperations.initializeFolder(saveFolderPath);
+
+    const fileData = this.buildFileData(thought);
+    const filePath = this.getFilePath(saveFolderPath, thought);
+    await FileOperations.createFile(filePath, fileData);
   }
 }

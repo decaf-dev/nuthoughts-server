@@ -10,15 +10,14 @@ import MarkdownFile from "./file/MarkdownFile";
 dotenv.config();
 
 const app: Express = express();
-// //Allow incoming strings
-// app.use(express.urlencoded({ extended: true }));
 //Allow incoming json
 app.use(express.json({ limit: "1mb" }));
 
 const port = process.env.PORT;
-if (port === undefined) throw Error("Missing port value");
+if (port === undefined) throw Error("Missing .env file value for key: PORT");
 const folderPath = process.env.SAVE_FOLDER_PATH;
-if (folderPath === undefined) throw Error("Missing folder value");
+if (folderPath === undefined)
+  throw Error("Missing .env file value for key: SAVE_FOLDER_PATH");
 
 app.get("/", (_req: Request, res: Response) => {
   res.send("NuThoughts server is running!");
@@ -43,7 +42,7 @@ app.post(
           expectedType: "string",
         },
       ]);
-      await MarkdownFile.saveThoughtAsMarkdownFile(thought);
+      await MarkdownFile.saveThought(folderPath, thought);
       res.sendStatus(201);
     } catch (err) {
       next(err);

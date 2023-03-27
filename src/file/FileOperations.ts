@@ -1,36 +1,43 @@
 import fs from "fs";
+import { getFilePathExtension } from "./utils";
 
 export default class FileOperations {
   static async initializeFolder(path: string) {
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path);
+    try {
+      await fs.promises.access(path);
+    } catch (err) {
+      const error = err as { code?: string };
+      if (error.code === "ENOENT") {
+        await fs.promises.mkdir(path);
+      } else {
+        throw err;
+      }
     }
   }
 
-  static async saveTextToFile(
+  static async createFile(
     filePath: string,
-    fileExtension: string,
     fileData: string,
-    numDuplicates: number = 0
+    numExisting: number = 0
   ) {
     try {
+      const filePathExtension = getFilePathExtension(filePath);
+      if (filePathExtension == null)
+        throw new SyntaxError("File must include an extension");
+      const { pathWithoutExtension, extension } = filePathExtension;
       const file =
-        filePath +
-        (numDuplicates !== 0 ? numDuplicates - 1 : "") +
-        fileExtension;
+        pathWithoutExtension +
+        (numExisting !== 0 ? numExisting - 1 : "") +
+        extension;
       await fs.promises.writeFile(file, fileData, {
         flag: "wx",
       });
-      console.log("Saved file", file);
     } catch (err: unknown) {
       const error = err as { code?: string };
       if (error.code === "EEXIST") {
-        await this.saveTextToFile(
-          filePath,
-          fileExtension,
-          fileData,
-          numDuplicates + 1
-        );
+        await this.createFile(filePath, fileData, numExisting + 1);
+      } else {
+        throw err;
       }
     }
   }
