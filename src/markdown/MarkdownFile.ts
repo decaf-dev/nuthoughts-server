@@ -11,7 +11,7 @@ export class MarkdownFile {
   }
 
   private static upperCaseFirstLetter(text: string) {
-    return text.substring(0, 1).toUpperCase() + text.substring(1);
+    return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
   }
 
   private static getFileNameFromText(text: string) {
