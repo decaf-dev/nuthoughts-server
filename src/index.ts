@@ -21,14 +21,14 @@ const folderPath = process.env.SAVE_FOLDER_PATH;
 if (folderPath === undefined) throw Error("Missing folder value");
 
 app.get("/", (_req: Request, res: Response) => {
-  res.send("Chisel Server is running!");
+  res.send("NuThoughts server is running!");
 });
 
 app.post(
   "/thought",
   async (req: Request, res: Response, next: NextFunction) => {
     const { body } = req;
-    console.log("New thought", body);
+    console.log("Received new thought", body);
     try {
       const thought = body as Thought;
       validateFields([
@@ -43,7 +43,6 @@ app.post(
           expectedType: "string",
         },
       ]);
-      //TODO if any fail - rollback
       await MarkdownFile.saveThoughtAsMarkdownFile(thought);
       res.sendStatus(201);
     } catch (err) {
@@ -58,6 +57,6 @@ app.use((err: Error, _req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-  console.log(`Chisel Server is running at: http://localhost:${port}`);
+  console.log(`NuThoughts is running at: http://localhost:${port}`);
   console.log(`Files will be saved to: ${folderPath}`);
 });

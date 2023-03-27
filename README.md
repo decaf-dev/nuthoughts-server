@@ -1,4 +1,4 @@
-# chisel-notes-server
+# NuThoughts Server
 
 Express.JS server that creates atomic markdown notes
 

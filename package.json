@@ -1,7 +1,7 @@
 {
-  "name": "chisel-notes-server",
+  "name": "nuthoughts-server",
   "version": "0.0.1",
-  "description": "Express.JS server that creates atomic markdown notes",
+  "description": "Express.JS server that accepts a thought from the NuThoughts app and create a markdown file in the specified folder",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
