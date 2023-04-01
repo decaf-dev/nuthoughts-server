@@ -3,14 +3,15 @@ import { EncryptedThought } from "../types";
 
 export const decryptThought = async (
   encrypted: EncryptedThought,
-  kek: Buffer
+  key: string
 ) => {
+  const keyBuffer = Buffer.from(key, "base64url");
   const { nonce, cipherText, mac } = encrypted;
   const iv = Buffer.from(nonce, "hex");
   const encryptedText = Buffer.from(cipherText, "hex");
   const authTag = Buffer.from(mac, "hex");
 
-  const decipher = crypto.createDecipheriv("chacha20-poly1305", kek, iv, {
+  const decipher = crypto.createDecipheriv("chacha20-poly1305", keyBuffer, iv, {
     authTagLength: 16,
   });
 

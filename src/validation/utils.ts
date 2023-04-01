@@ -15,25 +15,20 @@ export const validateFields = (fields: Field[]) => {
 };
 
 export const getConfigFile = () => {
-  const { PORT, SAVE_FOLDER_PATH, ENCRYPTION_PASSWORD, ENCRYPTION_SALT } =
-    process.env;
+  const { PORT, SAVE_FOLDER_PATH, ENCRYPTION_KEY } = process.env;
   if (
     PORT === undefined ||
     SAVE_FOLDER_PATH === undefined ||
-    ENCRYPTION_PASSWORD === undefined ||
-    ENCRYPTION_SALT === undefined
+    ENCRYPTION_KEY === undefined
   )
     throw new Error("Please fill out all variables in .env file");
 
-  if (ENCRYPTION_PASSWORD.length < 24)
-    throw new Error("Encryption password must be at least 24 characters long");
-  if (ENCRYPTION_SALT.length < 8)
-    throw new Error("Encryption salt must be at least 8 characters long");
+  if (Buffer.from(ENCRYPTION_KEY, "base64url").length !== 32)
+    throw new Error("Encryption key must be 32 bytes");
 
   return {
     port: parseInt(PORT),
     folderPath: SAVE_FOLDER_PATH,
-    encryptionPassword: ENCRYPTION_PASSWORD,
-    encryptionSalt: ENCRYPTION_SALT,
+    encryptionKey: ENCRYPTION_KEY,
   };
 };

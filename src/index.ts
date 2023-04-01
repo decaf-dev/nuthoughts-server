@@ -1,7 +1,6 @@
 import { Request, Response, Express, NextFunction } from "express";
 import express from "express";
 import dotenv from "dotenv";
-import argon2 from "argon2";
 
 import { getConfigFile, validateFields } from "./validation/utils";
 import { EncryptedThought, Thought } from "./types";
@@ -13,13 +12,7 @@ async function startServer() {
   dotenv.config();
 
   const app: Express = express();
-  const { port, folderPath, encryptionPassword, encryptionSalt } =
-    getConfigFile();
-
-  const kek = await argon2.hash(encryptionPassword, {
-    salt: Buffer.from(encryptionSalt),
-    raw: true,
-  });
+  const { port, folderPath, encryptionKey } = getConfigFile();
 
   //Allow incoming json
   app.use(express.json({ limit: "1mb" }));
@@ -54,7 +47,7 @@ async function startServer() {
           },
         ]);
 
-        const json = await decryptThought(encryptedThought, kek);
+        const json = await decryptThought(encryptedThought, encryptionKey);
         const thought = JSON.parse(json) as Thought;
         console.log("Received new thought", thought);
 
