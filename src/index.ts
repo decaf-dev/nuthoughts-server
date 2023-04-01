@@ -2,22 +2,19 @@ import { Request, Response, Express, NextFunction } from "express";
 import express from "express";
 import dotenv from "dotenv";
 
-import { validateFields } from "./validation/utils";
-import { Thought } from "./types";
+import { getConfigFile, validateFields } from "./validation/utils";
+import { EncryptedThought, Thought } from "./types";
 import MarkdownFile from "./file/MarkdownFile";
+import { decryptThought } from "./encryption";
 
 //Load .env file
 dotenv.config();
 
 const app: Express = express();
+const { port, folderPath, encryptionPassword, encryptionSalt } =
+  getConfigFile();
 //Allow incoming json
 app.use(express.json({ limit: "1mb" }));
-
-const port = process.env.PORT;
-if (port === undefined) throw Error("Missing .env file value for key: PORT");
-const folderPath = process.env.SAVE_FOLDER_PATH;
-if (folderPath === undefined)
-  throw Error("Missing .env file value for key: SAVE_FOLDER_PATH");
 
 app.get("/", (_req: Request, res: Response) => {
   res.send("NuThoughts server is running!");
@@ -27,9 +24,31 @@ app.post(
   "/thought",
   async (req: Request, res: Response, next: NextFunction) => {
     const { body } = req;
-    console.log("Received new thought", body);
+
     try {
-      const thought = body as Thought;
+      const encryptedThought = body as EncryptedThought;
+
+      validateFields([
+        {
+          name: "iv",
+          value: encryptedThought.iv,
+          expectedType: "string",
+        },
+        {
+          name: "encryptedData",
+          value: encryptedThought.encryptedData,
+          expectedType: "string",
+        },
+      ]);
+
+      const json = await decryptThought(
+        encryptedThought,
+        encryptionPassword,
+        encryptionSalt
+      );
+      const thought = JSON.parse(json) as Thought;
+      console.log("Received new thought", thought);
+
       validateFields([
         {
           name: "creationTime",
