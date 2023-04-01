@@ -1,25 +1,23 @@
-import argon2 from "argon2";
 import * as crypto from "crypto";
+import { EncryptedThought } from "../types";
 
 export const decryptThought = async (
-  encrypted: {
-    iv: string;
-    encryptedData: string;
-  },
-  password: string,
-  salt: string
+  encrypted: EncryptedThought,
+  kek: Buffer
 ) => {
-  const key = await argon2.hash(password, {
-    salt: Buffer.from(salt),
-    raw: true,
+  const { nonce, cipherText, mac } = encrypted;
+  const iv = Buffer.from(nonce, "hex");
+  const encryptedText = Buffer.from(cipherText, "hex");
+  const authTag = Buffer.from(mac, "hex");
+
+  const decipher = crypto.createDecipheriv("chacha20-poly1305", kek, iv, {
+    authTagLength: 16,
   });
 
-  let iv = Buffer.from(encrypted.iv, "hex");
-  let encryptedText = Buffer.from(encrypted.encryptedData, "hex");
-
-  const decipher = crypto.createDecipheriv("chacha20-poly1305", key, iv);
-
   let decrypted = decipher.update(encryptedText);
+
+  decipher.setAuthTag(authTag);
+
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
 };

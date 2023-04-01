@@ -4,6 +4,7 @@ export type Thought = {
 };
 
 export type EncryptedThought = {
-  iv: string;
-  encryptedData: string;
+  nonce: string;
+  cipherText: string;
+  mac: string;
 };
