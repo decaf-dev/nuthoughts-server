@@ -25,8 +25,8 @@ export const getConfigFile = () => {
   )
     throw new Error("Please fill out all variables in .env file");
 
-  if (ENCRYPTION_PASSWORD.length < 8)
-    throw new Error("Encryption password must be at least 8 characters long");
+  if (ENCRYPTION_PASSWORD.length < 24)
+    throw new Error("Encryption password must be at least 24 characters long");
   if (ENCRYPTION_SALT.length < 8)
     throw new Error("Encryption salt must be at least 8 characters long");
 
