@@ -25,7 +25,11 @@ export default class MarkdownFile {
 
   private static getFileName(thought: Thought) {
     const line = firstLine(thought.text);
-    const fileName = Truncate.smartTruncate(line, this.FILE_NAME_LENGTH);
+    const sanitizedLine = this.sanitizeFileName(line);
+    const fileName = Truncate.smartTruncate(
+      sanitizedLine,
+      this.FILE_NAME_LENGTH
+    );
     return uppercaseFirstLetter(fileName);
   }
 
@@ -34,9 +38,20 @@ export default class MarkdownFile {
     return folderPath + "/" + fileName + ".md";
   }
 
+  private static sanitizeFileName(fileName: string) {
+    //Replace slashes with a space
+    fileName = fileName.replace(/\//g, " ");
+
+    //If Mac OS, remove all non-alphanumeric characters except question marks
+    if (process.platform == "darwin") {
+      return fileName.replace(/[^a-z0-9? ]/gi, "");
+    } else {
+      return fileName.replace(/[^a-z0-9 ]/gi, "");
+    }
+  }
+
   static async saveThought(saveFolderPath: string, thought: Thought) {
     await FileOperations.initializeFolder(saveFolderPath);
-
     const fileData = this.buildFileData(thought);
     const filePath = this.getFilePath(saveFolderPath, thought);
     await FileOperations.createFile(filePath, fileData);
