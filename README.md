@@ -28,6 +28,16 @@ Now add a value to each variable in the environment file
 
 - `yarn run dev`
 
+### Production
+
+Compile to regular javascript
+
+- `yarn run build`
+
+Run production
+
+- `yarn run prod`
+
 ### Test
 
 - `yarn run test`
