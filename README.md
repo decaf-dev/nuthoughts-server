@@ -28,20 +28,11 @@ Now add a value to each variable in the environment file
 
 - `yarn run dev`
 
-### Production
+## Production
 
-Build a docker image
+- `yarn run build`
 
-```bash
-docker build . -t nuthoughts-server
-```
-
-Run the image as a container
-
-```bash
-
-docker run -p <host-port>:<container-port> --restart on-failure --name nuthoughts-server -d nuthoughts-server
-```
+- `yarn run start`
 
 ### Test
 
