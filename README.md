@@ -40,7 +40,7 @@ Run the image as a container
 
 ```bash
 
-docker run -p <host-port>:<container-port> --restarts always --name nuthoughts-server -d nuthoughts-server
+docker run -p <host-port>:<container-port> --restarts on-failure --name nuthoughts-server -d nuthoughts-server
 ```
 
 ### Test
