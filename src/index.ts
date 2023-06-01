@@ -69,9 +69,7 @@ async function startServer() {
         const error = err as Error;
         if (error.message) {
           if (error.message.includes("unable to authenticate data")) {
-            next(
-              "Invalid encryption key. Please check to make sure your app and .env file are using the same encryption key."
-            );
+            next("invalid encryption key.");
             return;
           }
         }
