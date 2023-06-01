@@ -65,7 +65,16 @@ async function startServer() {
         ]);
         await MarkdownFile.saveThought(folderPath, thought);
         res.sendStatus(201);
-      } catch (err) {
+      } catch (err: unknown) {
+        const error = err as Error;
+        if (error.message) {
+          if (error.message.includes("unable to authenticate data")) {
+            next(
+              "Invalid encryption key. Please check to make sure your app and .env file are using the same encryption key."
+            );
+            return;
+          }
+        }
         next(err);
       }
     }
