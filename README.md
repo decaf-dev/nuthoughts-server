@@ -30,13 +30,18 @@ Now add a value to each variable in the environment file
 
 ### Production
 
-Compile to regular javascript
+Build a docker image
 
-- `yarn run build`
+```bash
+docker build -t nuthoughts-server
+```
 
-Run production
+Run the image as a container
 
-- `yarn run prod`
+```bash
+
+docker run -p <host-port>:<container-port> --restarts always --name nuthoughts-server -d nuthoughts-server
+```
 
 ### Test
 

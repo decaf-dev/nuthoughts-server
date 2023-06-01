@@ -4,7 +4,6 @@
   "description": "Express.JS server that accepts a thought from the NuThoughts app and create a markdown file in the specified folder",
   "main": "index.js",
   "scripts": {
-    "prod": "node build/index.js",
     "build": "tsc",
     "dev": "nodemon src/index.ts",
     "test": "jest"
