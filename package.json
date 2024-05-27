@@ -9,7 +9,7 @@
     "dev": "nodemon src/index.ts",
     "test": "jest"
   },
-  "author": "Trey Wallis",
+  "author": "DecafDev",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.0.3",
